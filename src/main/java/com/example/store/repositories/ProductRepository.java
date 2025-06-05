@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.store.entities.Product;
 
-public interface ProductRepository extends JpaRepository<Product, Integer> {
-    List<Product> findByCategoryId(Byte categoryId);
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByCategoryId(Long categoryId);
 
 
     

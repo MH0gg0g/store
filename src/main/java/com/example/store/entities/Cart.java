@@ -1,9 +1,11 @@
 package com.example.store.entities;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "carts")
-// This class represents a shopping cart entity in the system.      
+// This class represents a shopping cart entity in the system.
 public class Cart {
 
     @Id
@@ -27,11 +29,50 @@ public class Cart {
     private UUID id;
 
     @Column(name = "date_created", insertable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private LocalDate dateCreated;
 
-    @OneToMany
-    private Set<CartItem> cartItems = new java.util.LinkedHashSet<>();
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE, orphanRemoval = true)
+    private Set<CartItem> items = new LinkedHashSet<>();
 
+    public Long getTotalPrice() {
+        long total = 0L;
+        for (CartItem item : items) {
+            total += item.getTotalPrice();
+        }
+        return total;
+    }
+
+    public CartItem getItem(Long productId) {
+        return items.stream().filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public CartItem addItem(Product product) {
+        var cartItem = getItem(product.getId());
+
+        if (cartItem != null) {
+            cartItem.setQuantity(cartItem.getQuantity() + 1);
+        } else {
+            cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(1L);
+            cartItem.setCart(this);
+            items.add(cartItem);
+        }
+        return cartItem;
+    }
+
+    public void removeItem(long productId) {
+        var cartItem = getItem(productId);
+        if (cartItem != null) {
+            items.remove(cartItem);
+            cartItem.setCart(null);
+        }
+    }
+
+    public void clearCart() {
+        items.clear();
+    }
 
 }

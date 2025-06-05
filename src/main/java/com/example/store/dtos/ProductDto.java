@@ -1,5 +1,9 @@
 package com.example.store.dtos;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,11 +11,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProductDto {
 
-    private int id;
+    private Long id;
+    @NotBlank(message = "Name cannot be blank")
     private String name;
+    @NotNull(message = "Description cannot be null")
     private String description;
-    private int price;
-    private int CategoryID;
-    
+    @Min(value = 1, message = "Price must be at least 1")
+    @Max(value = 100, message = "Price must not exceed 100")
+    private Long price;
+    @NotNull(message = "CategoryID cannot be null")
+    private Long CategoryID;
 
 }

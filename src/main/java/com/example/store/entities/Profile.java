@@ -20,7 +20,7 @@ public class Profile {
 
     @Id
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "bio")
     private String bio;
@@ -32,7 +32,7 @@ public class Profile {
     private LocalDate dateOfBirth;
 
     @Column(name = "loyalty_points")
-    private Integer loyaltyPoints;
+    private Long loyaltyPoints;
 
     @OneToOne
     @MapsId

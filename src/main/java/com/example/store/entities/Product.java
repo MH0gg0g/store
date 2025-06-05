@@ -20,7 +20,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -29,7 +29,7 @@ public class Product {
     private String description;
 
     @Column(name = "price")
-    private int price;
+    private Long price;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
