@@ -1,12 +1,9 @@
 package com.example.store.controllers;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.store.dtos.ProductDto;
-import com.example.store.exceptions.CategoryNotFoundException;
-import com.example.store.exceptions.ProductNotFoundException;
 import com.example.store.services.ProductService;
 
 import lombok.AllArgsConstructor;
@@ -64,13 +59,4 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleProductNotFound() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Product Not Found"));
-    }
-
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCategoryNotFound() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Category Not Found"));
-    }
 }

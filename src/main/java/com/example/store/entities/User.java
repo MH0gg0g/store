@@ -7,6 +7,8 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,6 +46,10 @@ public class User {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Address> addresses = new ArrayList<>();

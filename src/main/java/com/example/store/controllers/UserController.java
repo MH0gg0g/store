@@ -1,14 +1,10 @@
 package com.example.store.controllers;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,8 +17,6 @@ import com.example.store.dtos.UserDto;
 import com.example.store.dtos.UserRegisterationRequest;
 import com.example.store.dtos.changePasswordRequest;
 import com.example.store.dtos.updateUserRequest;
-import com.example.store.exceptions.InvalidPasswordException;
-import com.example.store.exceptions.UserNotFoundException;
 import com.example.store.services.UserService;
 
 import lombok.AllArgsConstructor;
@@ -54,7 +48,7 @@ public class UserController {
         return ResponseEntity.created(uri).body(userDto);
     }
 
-    @PatchMapping("/{userId}/change-password")
+    @PostMapping("/{userId}/change-password")
     public ResponseEntity<Void> changePassword(@PathVariable Long userId,
             @RequestBody changePasswordRequest userRequest) {
 
@@ -74,13 +68,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found"));
-    }
-
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<Map<String, String>> handleInvalidPasswordException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Password is incorrect"));
-    }
 }
