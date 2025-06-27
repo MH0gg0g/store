@@ -16,6 +16,7 @@ import com.example.store.dtos.ErrorDto;
 import com.example.store.exceptions.CartEmptyException;
 import com.example.store.exceptions.CartNotFoundException;
 import com.example.store.exceptions.DublicateEmailException;
+import com.example.store.exceptions.InvalidJwtToken;
 import com.example.store.exceptions.InvalidPasswordException;
 import com.example.store.exceptions.OrderNotFoundException;
 import com.example.store.exceptions.ProductNotFoundException;
@@ -54,7 +55,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorDto(ex.getMessage()));
     }
 
-    @ExceptionHandler({ DublicateEmailException.class, ProductNotFoundException.class, CartEmptyException.class })
+    @ExceptionHandler({ DublicateEmailException.class, ProductNotFoundException.class, InvalidJwtToken.class,
+            CartEmptyException.class })
     public ResponseEntity<ErrorDto> handleBadRequestException(Exception ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto(ex.getMessage()));
     }
