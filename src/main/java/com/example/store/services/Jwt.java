@@ -20,8 +20,17 @@ public class Jwt {
         return claims.getExpiration().before(new Date());
     }
 
+    public long getRemainingExpirationTime() {
+        long expiration = claims.getExpiration().getTime() - System.currentTimeMillis();
+        return Math.max(0, expiration);
+    }
+
     public Long getUserID() {
         return Long.valueOf(claims.getSubject());
+    }
+    
+    public String getTokenID() {
+        return claims.getId();
     }
 
     public Role getRole() {

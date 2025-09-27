@@ -27,31 +27,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        var authHeader = request.getHeader("Authorization");
+            var jwt = jwtService.ExtractJwtFromRequest(request);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+            if (jwt != null && !jwt.isExpired() && !jwtService.isTokenBlacklisted(jwt.getTokenID())) {
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        jwt.getUserID(),
+                        null,
+                        List.of(new SimpleGrantedAuthority("Role_" + jwt.getRole())));
 
-        var token = authHeader.replace("Bearer ", "");
-        var jwt = jwtService.parseToken(token);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        if (jwt == null || !jwtService.TokenExists(jwt) || jwt.isExpired()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        var authentication = new UsernamePasswordAuthenticationToken(
-                jwt.getUserID(),
-                null,
-                List.of(new SimpleGrantedAuthority("Role_" + jwt.getRole())));
-
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         filterChain.doFilter(request, response);
     }
-
 }

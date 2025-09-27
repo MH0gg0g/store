@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.store.dtos.JwtResponse;
 import com.example.store.dtos.LoginRequest;
 import com.example.store.exceptions.InvalidJwtToken;
-import com.example.store.repositories.TokenRepository;
 import com.example.store.repositories.UserRepository;
+
 import com.example.store.services.JwtService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,6 @@ import lombok.AllArgsConstructor;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
     private final JwtService jwtService;
 
     @PostMapping("/login")
@@ -41,20 +41,14 @@ public class AuthController {
         var cookie = jwtService.generateRefreshToken(user);
         response.addCookie(cookie);
 
-        jwtService.saveToken(accessToken.toString(), cookie.getValue(), user);
-
         return ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userId = (Long) authentication.getPrincipal();
-
-        jwtService.deleteToken(userId);
-
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        var jwt = jwtService.ExtractJwtFromRequest(request);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(jwtService.blacklistToken(jwt));
     }
 
     @PostMapping("/refresh")
@@ -62,7 +56,7 @@ public class AuthController {
             @CookieValue(value = "refreshToken") String refreshToken) {
 
         var jwt = jwtService.parseToken(refreshToken);
-        if (jwt == null || !jwtService.TokenExists(jwt) || jwt.isExpired()) {
+        if (jwt == null || jwt.isExpired()) {
             throw new InvalidJwtToken();
         }
 

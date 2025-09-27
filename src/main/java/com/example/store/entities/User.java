@@ -48,9 +48,6 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
     private List<Address> addresses = new ArrayList<>();
 
     @ManyToMany

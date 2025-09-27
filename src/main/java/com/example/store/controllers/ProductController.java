@@ -18,7 +18,6 @@ import com.example.store.dtos.ProductDto;
 import com.example.store.services.ProductService;
 
 import lombok.AllArgsConstructor;
-import lombok.var;
 
 @RestController
 @AllArgsConstructor
