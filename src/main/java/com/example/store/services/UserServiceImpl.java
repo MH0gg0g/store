@@ -22,8 +22,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public List<UserDto> getAllUsers() {
@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
 
     public UserDto getUserById(Long userId) {
         var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
         return userMapper.toDto(user);
     }
 
@@ -59,19 +58,16 @@ public class UserServiceImpl implements UserService {
 
     public void changePassword(Long userId, changePasswordRequest userRequest) {
         var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
-        if (!user.getPassword().equals(userRequest.getOldPassword())) {
+        if (!passwordEncoder.matches(userRequest.getOldPassword(), user.getPassword())) {
             throw new InvalidPasswordException();
         }
 
-        user.setPassword(userRequest.getNewPassword());
+        user.setPassword(passwordEncoder.encode(userRequest.getNewPassword()));
         userRepository.save(user);
     }
 
     public void removeUser(Long userId) {
         var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
         userRepository.delete(user);
     }
-
 }

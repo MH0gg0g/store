@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.example.store.dtos.ProductDto;
@@ -25,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CategoryRepository categoryRepository;
 
-    @Cacheable(value = "products", key = "#all")
+    @Cacheable(value = "products:list", key = "#categoryId != null ? #categoryId : 'ALL'")
     public List<ProductDto> getAllProducts(Long categoryId) {
         List<Product> products;
 
@@ -38,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(productMapper::toDto).toList();
     }
 
-    @Cacheable(value = "products", key = "#productId")
+    @Cacheable(value = "products:item", key = "#productId")
     public ProductDto getProductById(Long productId) {
         var product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
@@ -46,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toDto(product);
     }
 
+    @CacheEvict(value = "products:list", allEntries = true)
     public ProductDto createProduct(ProductDto productRequest) {
         var product = productMapper.toEntity(productRequest);
         var category = categoryRepository.findById(productRequest.getCategoryID())
@@ -60,7 +62,10 @@ public class ProductServiceImpl implements ProductService {
         return productRequest;
     }
 
-    @CachePut(value = "products", key = "#product.id")
+    @Caching(
+        put = { @CachePut(value = "products:item", key = "#productId") },
+        evict = { @CacheEvict(value = "products:list", allEntries = true) }
+    )
     public ProductDto updateProduct(Long productId, ProductDto productRequest) {
         var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
         var category = categoryRepository.findById(productRequest.getCategoryID())
@@ -76,7 +81,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @CacheEvict(value = "products", key = "#productId")
+    @Caching(evict = {
+        @CacheEvict(value = "products:item", key = "#productId"),
+        @CacheEvict(value = "products:list", allEntries = true)
+    })
     public void removeProduct(Long productId) {
         var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
 

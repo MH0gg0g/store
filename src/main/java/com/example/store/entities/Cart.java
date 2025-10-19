@@ -20,7 +20,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "carts")
-// This class represents a shopping cart entity in the system.
 public class Cart {
 
     @Id

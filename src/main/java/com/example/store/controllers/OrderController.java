@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
-
     private final OrderService orderService;
 
     @GetMapping
