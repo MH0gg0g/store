@@ -32,9 +32,8 @@ public class CartServiceImpl implements CartService {
     }
 
     public CartItemDto addToCart(UUID cartId, Long productId) {
-        var cart = cartRepository.findById(cartId).orElseThrow(() -> new CartNotFoundException());
-
-        var product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
+        var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
 
         var cartItem = cart.addItem(product);
         cartRepository.save(cart);
@@ -43,13 +42,12 @@ public class CartServiceImpl implements CartService {
     }
 
     public CartDto getCart(UUID cartId) {
-        var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
         return cartMapper.toDto(cart);
     }
 
     public CartItemDto updateItem(UUID cartId, Long productId, Long quantity) {
-        var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
-
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
         var cartItem = cart.getItem(productId);
 
         if (cartItem == null) {
@@ -63,15 +61,13 @@ public class CartServiceImpl implements CartService {
     }
 
     public void removeItem(UUID cartId, Long productId) {
-        var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
-
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
         cart.removeItem(productId);
         cartRepository.save(cart);
     }
 
     public void clearCart(UUID cartId) {
-        var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
-
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
         cart.clearCart();
         cartRepository.save(cart);
     }
@@ -81,8 +77,7 @@ public class CartServiceImpl implements CartService {
     }
 
     public void removeCart(UUID cartId) {
-        var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
-
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
         cartRepository.delete(cart);
     }
 

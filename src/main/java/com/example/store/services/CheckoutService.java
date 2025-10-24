@@ -1,8 +1,9 @@
 package com.example.store.services;
 
-import com.example.store.dtos.CheckoutRequest;
+import java.util.UUID;
+
 import com.example.store.dtos.CheckoutResponse;
 
 public interface CheckoutService {
-    CheckoutResponse checkout(CheckoutRequest request);
+    CheckoutResponse checkout(UUID cartId);
 }

@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
             throw new DublicateEmailException();
         }
         var user = userMapper.toEntity(userRequest);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
         return userMapper.toDto(user);

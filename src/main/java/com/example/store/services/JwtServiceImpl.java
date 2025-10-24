@@ -6,13 +6,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
 import com.example.store.config.JwtConfig;
 import com.example.store.entities.User;
-import com.example.store.exceptions.InvalidJwtToken;
+import com.example.store.exceptions.InvalidTokenException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
@@ -42,24 +43,16 @@ public class JwtServiceImpl implements JwtService {
         return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
-    public Cookie generateRefreshToken(User user) {
-        var refreshToken = generateToken(user, jwtConfig.getRefreshTokenExpiration());
-
-        var cookie = new Cookie("refreshToken", refreshToken.toString());
-        cookie.setPath("/auth/refresh");
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
-
-        return cookie;
+    public Jwt generateRefreshToken(User user) {
+        return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
     public Jwt parseToken(String token) {
         try {
             var claims = getClamis(token);
             return new Jwt(claims, jwtConfig.getSecretKey());
-        } catch (Exception e) {
-            throw new InvalidJwtToken();
+        } catch (ExpiredJwtException e) {
+            throw new InvalidTokenException();
         }
     }
 
@@ -74,11 +67,15 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Claims getClamis(String token) {
-        return Jwts.parser()
-                .verifyWith(jwtConfig.getSecretKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(jwtConfig.getSecretKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            throw new InvalidTokenException();
+        }
     }
 
     public String blacklistToken(Jwt jwt) {

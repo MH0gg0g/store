@@ -10,7 +10,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.store.dtos.ErrorDto;
+import com.example.store.exceptions.InvalidTokenException;
 import com.example.store.services.JwtService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,19 +29,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
+        try {
             var jwt = jwtService.ExtractJwtFromRequest(request);
-
             if (jwt != null && !jwt.isExpired() && !jwtService.isTokenBlacklisted(jwt.getTokenID())) {
-        var authentication = new UsernamePasswordAuthenticationToken(
-            jwt.getUserID(),
-            null,
-            List.of(new SimpleGrantedAuthority("ROLE_" + jwt.getRole())));
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        jwt.getUserID(),
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_" + jwt.getRole())));
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        filterChain.doFilter(request, response);
+
+            filterChain.doFilter(request, response);
+        } catch (InvalidTokenException ex) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            var error = new ErrorDto(ex.getMessage());
+            var mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(error));
+        }
     }
 }

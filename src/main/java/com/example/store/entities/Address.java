@@ -28,9 +28,6 @@ public class Address {
     @Column(name = "city")
     private String city;
 
-    @Column(name = "zip")
-    private String zip;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

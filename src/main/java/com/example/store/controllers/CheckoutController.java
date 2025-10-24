@@ -20,7 +20,7 @@ public class CheckoutController {
 
     @PostMapping
     public CheckoutResponse checkout(@Valid @RequestBody CheckoutRequest request) {
-        return checkoutService.checkout(request);
+        return checkoutService.checkout(request.getCartId());
     }
 
 }

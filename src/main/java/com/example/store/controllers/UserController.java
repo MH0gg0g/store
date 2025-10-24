@@ -22,8 +22,8 @@ import com.example.store.services.UserService;
 
 import lombok.AllArgsConstructor;
 
-@RestController
 @AllArgsConstructor
+@RestController
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
@@ -50,6 +50,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/change-password")
+    @PreAuthorize("#userId == authentication.principal")
     public ResponseEntity<Void> changePassword(@PathVariable Long userId,
             @RequestBody changePasswordRequest userRequest) {
 

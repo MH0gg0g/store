@@ -33,8 +33,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ProductDto getProductById(@PathVariable Long productId) {
-        return productService.getProductById(productId);
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 
     @PostMapping

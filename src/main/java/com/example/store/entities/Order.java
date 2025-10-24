@@ -16,11 +16,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -54,7 +52,7 @@ public class Order {
         order.setTotalPrice(cart.getTotalPrice());
 
         cart.getItems().forEach(item -> {
-            var orderItem = new OrderItem();
+            var orderItem = new OrderItem(order, item.getProduct(), item.getQuantity());
             order.items.add(orderItem);
         });
 

@@ -22,17 +22,23 @@ import com.example.store.dtos.CartItemDto;
 import com.example.store.dtos.updateCartItemRequest;
 import com.example.store.services.CartService;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/carts")
-@Tag(name = "Carts")
 public class CartController {
 
     private final CartService cartService;
+
+    @PostMapping
+    public ResponseEntity<CartDto> createCart(UriComponentsBuilder uriBuilder) {
+        var cartDto = cartService.createCart();
+        var uri = uriBuilder.path("/carts/{id}").buildAndExpand(cartDto.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(cartDto);
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -54,15 +60,6 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItemDto);
     }
 
-    @PostMapping
-    public ResponseEntity<CartDto> createCart(UriComponentsBuilder uriBuilder) {
-
-        var cartDto = cartService.createCart();
-        var uri = uriBuilder.path("/carts/{id}").buildAndExpand(cartDto.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(cartDto);
-    }
-
     @PutMapping("{cartId}/items/{productId}")
     public CartItemDto updateItem(@PathVariable("cartId") UUID cartId,
             @PathVariable("productId") Long productId,
@@ -78,14 +75,14 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items")
-    public ResponseEntity<Void> clearCart(@PathVariable UUID cartId) {
+    public ResponseEntity<Void> clearCart(@PathVariable("cartId") UUID cartId) {
         cartService.clearCart(cartId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<Void> removeItem(@PathVariable UUID cartId,
-            @PathVariable Long productId) {
+    public ResponseEntity<Void> removeItem(@PathVariable("cartId") UUID cartId,
+            @PathVariable("productId") Long productId) {
 
         cartService.removeItem(cartId, productId);
 

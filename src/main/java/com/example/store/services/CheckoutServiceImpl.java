@@ -1,8 +1,9 @@
 package com.example.store.services;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
-import com.example.store.dtos.CheckoutRequest;
 import com.example.store.dtos.CheckoutResponse;
 import com.example.store.entities.Order;
 import com.example.store.exceptions.CartEmptyException;
@@ -21,17 +22,17 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final CartService cartService;
     private final AuthService authService;
 
-    public CheckoutResponse checkout(CheckoutRequest request) {
-        var cart = cartRepository.findById(request.getCartId()).orElseThrow(CartNotFoundException::new);
+    public CheckoutResponse checkout(UUID cartId) {
+        var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
+        var currentUser = authService.getCurrentUser();
 
         if (cart.isEmpty()) {
             throw new CartEmptyException();
         }
 
-        var order = Order.fromCart(cart, authService.getCurrentUser());
+        var order = Order.fromCart(cart, currentUser);
 
         orderRepository.save(order);
-
         cartService.clearCart(cart.getId());
 
         return new CheckoutResponse(order.getId());
