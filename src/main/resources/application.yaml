@@ -3,8 +3,6 @@ Spring:
     name: store
   datasource:
     url: ${DATABASE_URL}
-  jpa:
-    show-sql: true
   jwt:
     secret: GEoCe6iMrEi8yYI1osz6zdZRxEFwoMkcMSO1eH8KRums2EnC9XqzpHUxee86bwd0QeGz4mkjjgxu7JRNenm/dg==
     refreshTokenExpiration: 420
