@@ -11,5 +11,5 @@ Spring:
     accessTokenExpiration: 300
     jwtBlacklistprefix: jwt:blacklist-
   redis:
-    data:source:
+    datasource:
       url: ${REDIS_URL}
