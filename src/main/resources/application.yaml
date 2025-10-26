@@ -2,7 +2,7 @@ Spring:
   application:
     name: store
   datasource:
-    url: ${DATASOURCE_URL}
+    url: ${DATABASE_URL}
   jpa:
     show-sql: true
   jwt:
@@ -10,6 +10,10 @@ Spring:
     refreshTokenExpiration: 420
     accessTokenExpiration: 300
     jwtBlacklistprefix: jwt:blacklist-
+  cache:
+    type: redis
   redis:
-    datasource:
-      url: ${REDIS_URL}
+    data:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
