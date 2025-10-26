@@ -2,9 +2,7 @@ Spring:
   application:
     name: store
   datasource:
-    url: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true 
-    username: root
-    password: root
+    url: ${DATASOURCE_URL}
   jpa:
     show-sql: true
   jwt:
@@ -12,12 +10,6 @@ Spring:
     refreshTokenExpiration: 420
     accessTokenExpiration: 300
     jwtBlacklistprefix: jwt:blacklist-
-  cache:
-    type: redis
-  data:
-    redis: 
-      host: localhost
-      port: 6379
-
-
-websiteUrl: http://localhost:8080
+  redis:
+    data:source:
+      url: ${REDIS_URL}
