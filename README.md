@@ -2,6 +2,10 @@
 
 A compact, well-structured Java Spring Boot sample REST API demonstrating a production-grade backend for a simple online store. This repository is designed to showcase architecture, patterns, and capabilities you’d expect in a modern e‑commerce service: secure JWT-based auth, product catalog, shopping cart, checkout and orders, Redis caching, Flyway migrations, DTO mapping, layered services, and clean controller APIs.
 
+## Video Preview
+
+Youtube - https://youtu.be/ZQ0LR4F3oDQ
+
 ## Highlights & Selling Points
 
 - Robust authentication and authorization using JWT tokens with a dedicated `JwtConfig` and `SecurityConfig`.
