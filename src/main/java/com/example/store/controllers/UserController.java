@@ -35,6 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal")
     public UserDto getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }

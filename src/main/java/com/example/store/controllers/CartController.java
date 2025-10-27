@@ -68,9 +68,12 @@ public class CartController {
         return cartService.updateItem(cartId, productId, request.getQuantity());
     }
 
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> removeCart(@PathVariable UUID cartId) {
-        cartService.removeCart(cartId);
+    @DeleteMapping("/{cartId}/items/{productId}")
+    public ResponseEntity<Void> removeItem(@PathVariable("cartId") UUID cartId,
+            @PathVariable("productId") Long productId) {
+
+        cartService.removeItem(cartId, productId);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -80,12 +83,9 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<Void> removeItem(@PathVariable("cartId") UUID cartId,
-            @PathVariable("productId") Long productId) {
-
-        cartService.removeItem(cartId, productId);
-
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<Void> removeCart(@PathVariable UUID cartId) {
+        cartService.removeCart(cartId);
         return ResponseEntity.noContent().build();
     }
 

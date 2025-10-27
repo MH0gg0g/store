@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     @CacheEvict(value = "products:list", allEntries = true)
     public ProductDto createProduct(ProductDto productRequest) {
         var product = productMapper.toEntity(productRequest);
-        var category = categoryRepository.findById(productRequest.getCategoryID())
+        var category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(CategoryNotFoundException::new);
 
         product.setCategory(category);
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
     )
     public ProductDto updateProduct(Long productId, ProductDto productRequest) {
         var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
-        var category = categoryRepository.findById(productRequest.getCategoryID())
+        var category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(CategoryNotFoundException::new);
 
         productMapper.update(product, productRequest);

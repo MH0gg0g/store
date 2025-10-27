@@ -21,7 +21,7 @@ public class ProductDto {
     @Min(value = 1, message = "Price must be at least 1")
     @Max(value = 100, message = "Price must not exceed 100")
     private Long price;
-    @NotNull(message = "CategoryID cannot be null")
-    private Long CategoryID;
+    @NotNull(message = "Category ID cannot be null")
+    private Long categoryId;
 
 }

@@ -10,7 +10,7 @@ import com.example.store.entities.Product;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    @Mapping(source = "category.id", target = "categoryID")
+    @Mapping(source = "category.id", target = "categoryId")
     ProductDto toDto(Product Product);
 
     Product toEntity(ProductDto productDto);

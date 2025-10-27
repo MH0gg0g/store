@@ -1,10 +1,10 @@
 -- Users (passwords are bcrypt hashes for 'password')
 INSERT INTO users (name, email, password, role) VALUES
-  ('Alice Example', 'alice@example.com', '$2a$10$/YNG/1DeFeLK2yPdN81BReJXxCqWUOtaJuHXDMQbRkWvjFB7TvpQe', 'USER');
+  ('user', 'user@mail.com', '$2a$10$/YNG/1DeFeLK2yPdN81BReJXxCqWUOtaJuHXDMQbRkWvjFB7TvpQe', 'USER');
 SET @alice_id = LAST_INSERT_ID();
 
 INSERT INTO users (name, email, password, role) VALUES
-  ('Bob Admin', 'bob@example.com', '$2a$10$Ti9iywB.a0C5bW7E0u2Tnet/FpYqIyyy6bjuLwicO9CoG2tQFtY86', 'ADMIN');
+  ('admin', 'admin@mail.com', '$2a$10$Ti9iywB.a0C5bW7E0u2Tnet/FpYqIyyy6bjuLwicO9CoG2tQFtY86', 'ADMIN');
 SET @bob_id = LAST_INSERT_ID();
 
 -- Addresses (belongs to Alice)
@@ -20,9 +20,9 @@ SET @cat_books = LAST_INSERT_ID();
 
 -- Products
 INSERT INTO products (name, price, category_id, description) VALUES
-  ('Smartphone X', 699.99, @cat_electronics, 'Sample smartphone with 128GB storage'),
-  ('Laptop Pro', 1299.99, @cat_electronics, 'Powerful laptop for developers'),
-  ('Learning SQL', 29.99, @cat_books, 'Practical guide to SQL and relational databases');
+  ('Smartphone X', 699, @cat_electronics, 'Sample smartphone with 128GB storage'),
+  ('Laptop Pro', 1299, @cat_electronics, 'Powerful laptop for developers'),
+  ('Learning SQL', 29, @cat_books, 'Practical guide to SQL and relational databases');
 
 -- Capture product IDs explicitly to make sure we reference correct ones
 SELECT id INTO @prod_smartphone FROM products WHERE name='Smartphone X' LIMIT 1;
@@ -46,18 +46,18 @@ INSERT INTO cart_items (cart_id, product_id, quantity) VALUES
 
 -- Create an order for Alice (completed example)
 INSERT INTO orders (customer_id, status, total_price) VALUES
-  (@alice_id, 'COMPLETED', 1999.98);
+  (@alice_id, 'COMPLETED', 1999);
 SET @order1 = LAST_INSERT_ID();
 
 -- Order items for that order
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price) VALUES
-  (@order1, @prod_smartphone, 1, 699.99, 699.99),
-  (@order1, @prod_laptop, 1, 1299.99, 1299.99);
+  (@order1, @prod_smartphone, 1, 699, 699),
+  (@order1, @prod_laptop, 1, 1299, 1299);
 
 -- Another pending order (Bob)
 INSERT INTO orders (customer_id, status, total_price) VALUES
-  (@bob_id, 'PENDING', 29.99);
+  (@bob_id, 'PENDING', 29);
 SET @order2 = LAST_INSERT_ID();
 
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price) VALUES
-  (@order2, @prod_book, 1, 29.99, 29.99);
+  (@order2, @prod_book, 1, 29, 29);

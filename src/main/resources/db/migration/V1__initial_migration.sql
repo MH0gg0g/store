@@ -28,7 +28,7 @@ CREATE TABLE
     products (
         id BIGINT AUTO_INCREMENT NOT NULL,
         name VARCHAR(255) NOT NULL,
-        price DECIMAL(10, 2) NOT NULL,
+        price BIGINT NOT NULL,
         category_id TINYINT,
         description TEXT NOT NULL,
         PRIMARY KEY (id)
@@ -56,8 +56,8 @@ CREATE TABLE
         id BIGINT AUTO_INCREMENT NOT NULL,
         customer_id BIGINT NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
-        total_price DECIMAL(10, 2) NOT NULL,
-        order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        total_price BIGINT NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
     );
 
@@ -67,8 +67,8 @@ CREATE TABLE
         order_id BIGINT NOT NULL,
         product_id BIGINT NOT NULL,
         quantity INT NOT NULL,
-        unit_price DECIMAL(10, 2) NOT NULL,
-        total_price DECIMAL(10, 2) NOT NULL,
+        unit_price BIGINT NOT NULL,
+        total_price BIGINT NOT NULL,
         PRIMARY KEY (id)
     );
 
