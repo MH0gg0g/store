@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: store
+  # main:
+    # banner-mode: "off"
+  datasource:
+    url: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true 
+    username: root
+    password: root
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  jwt:
+    secret: GEoCe6iMrEi8yYI1osz6zdZRxEFwoMkcMSO1eH8KRums2EnC9XqzpHUxee86bwd0QeGz4mkjjgxu7JRNenm/dg==
+    refreshTokenExpiration: 420
+    accessTokenExpiration: 9999
+    jwtBlacklistprefix: jwt:blacklist-
+  cache:
+    type: redis
+  data:
+    redis: 
+      host: localhost
+      port: 6379
+logging:
+  level:
+    org.springframework: INFO
+    com.example.store: TRACE
+  file:
+    name: ${LOG_PATH:-./logs}/App.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
