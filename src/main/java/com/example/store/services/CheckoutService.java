@@ -6,4 +6,6 @@ import com.example.store.dtos.CheckoutResponse;
 
 public interface CheckoutService {
     CheckoutResponse checkout(UUID cartId);
+
+    void cancelOrder(Long orderId);
 }

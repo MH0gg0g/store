@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.example.store.dtos.ProductDto;
 import com.example.store.services.ProductService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productRequest,
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productRequest,
             UriComponentsBuilder uriBuilder) {
 
         var ProductDto = productService.createProduct(productRequest);
@@ -47,7 +48,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ProductDto updateProduct(@PathVariable Long productId,
-            @RequestBody ProductDto productRequest) {
+            @Valid @RequestBody ProductDto productRequest) {
         return productService.updateProduct(productId, productRequest);
     }
 

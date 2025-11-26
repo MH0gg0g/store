@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.example.store.dtos.RegisterUserRequest;
+import com.example.store.dtos.UpdateEmailRequest;
+import com.example.store.dtos.UpdatePasswordRequest;
 import com.example.store.dtos.UserDto;
-import com.example.store.dtos.UserRegisterationRequest;
-import com.example.store.dtos.changePasswordRequest;
-import com.example.store.dtos.updateUserRequest;
 import com.example.store.services.UserService;
 
 import jakarta.validation.Valid;
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserRegisterationRequest userRequest,
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody RegisterUserRequest userRequest,
             UriComponentsBuilder uriBuilder) {
 
         var userDto = userService.createUser(userRequest);
@@ -50,7 +50,7 @@ public class UserController {
 
     @PostMapping("/{userId}/change-password")
     public ResponseEntity<Void> changePassword(@PathVariable Long userId,
-            @RequestBody changePasswordRequest userRequest) {
+            @RequestBody UpdatePasswordRequest userRequest) {
 
         userService.changePassword(userId, userRequest);
         return ResponseEntity.ok().build();
@@ -58,7 +58,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId,
-            @RequestBody updateUserRequest userRequest) {
+            @RequestBody UpdateEmailRequest userRequest) {
         return userService.updateUser(userId, userRequest);
     }
 

@@ -2,18 +2,16 @@ package com.example.store.services;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.store.aop.Loggable;
+import com.example.store.dtos.RegisterUserRequest;
+import com.example.store.dtos.UpdateEmailRequest;
+import com.example.store.dtos.UpdatePasswordRequest;
 import com.example.store.dtos.UserDto;
-import com.example.store.dtos.UserRegisterationRequest;
-import com.example.store.dtos.changePasswordRequest;
-import com.example.store.dtos.updateUserRequest;
-import com.example.store.entities.Role;
 import com.example.store.exceptions.DublicateEmailException;
 import com.example.store.exceptions.InvalidPasswordException;
 import com.example.store.exceptions.UserNotFoundException;
@@ -25,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -33,11 +30,12 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserDto> getAllUsers() {
-        logger.debug("getAllUsers: fetching all users");
+
         var users = userRepository.findAll().stream().map(userMapper::toDto).toList();
         return users;
     }
 
+    @Loggable
     @Cacheable(value = "users", key = "#userId")
     @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal")
     public UserDto getUserById(Long userId) {
@@ -45,46 +43,45 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
-    public UserDto createUser(UserRegisterationRequest userRequest) {
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
-            logger.warn("duplicate email found {}", userRequest.getEmail());
-            throw new DublicateEmailException(userRequest.getEmail());
+    @Loggable
+    public UserDto createUser(RegisterUserRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new DublicateEmailException(request.getEmail());
         }
-        var user = userMapper.toEntity(userRequest);
-        user.setRole(Role.USER);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        var user = userMapper.toEntity(request);
         userRepository.save(user);
-        logger.info("createUser: created user id={} email={}", user.getId(), user.getEmail());
+
         return userMapper.toDto(user);
     }
 
+    @Loggable
     @PreAuthorize("#userId == authentication.principal")
-    public UserDto updateUser(Long userId, updateUserRequest userRequest) {
+    public UserDto updateUser(Long userId, UpdateEmailRequest request) {
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-
-        userMapper.update(userRequest, user);
+        userMapper.update(request, user);
         userRepository.save(user);
-        logger.info("updateUser: updated user id={}", userId);
+
         return userMapper.toDto(user);
     }
 
-    @PreAuthorize("#userId == authentication.principal")
-    public void changePassword(Long userId, changePasswordRequest userRequest) {
+    @Loggable
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal")
+    public void changePassword(Long userId, UpdatePasswordRequest request) {
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        if (!passwordEncoder.matches(userRequest.getOldPassword(), user.getPassword())) {
-            logger.warn("invalid old password for userId={}", userId);
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+
             throw new InvalidPasswordException();
         }
 
-        user.setPassword(passwordEncoder.encode(userRequest.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
-        logger.info("changePassword: password changed for userId={}", userId);
+
     }
 
+    @Loggable
     @PreAuthorize("hasRole('ADMIN')")
     public void removeUser(Long userId) {
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.delete(user);
-        logger.info("removeUser: deleted user id={}", userId);
     }
 }

@@ -33,7 +33,7 @@ public class CartItem {
     @Column(name = "quantity")
     private Long quantity;
 
-    public Long getTotalPrice() {
+    public Double getTotalPrice() {
         return product.getPrice() * quantity;
     }
 

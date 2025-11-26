@@ -15,5 +15,5 @@ public class CartDto {
     private List<CartItemDto> items = new ArrayList<>();
     @NotNull(message = "Total Price cannot be null")
     @Min(value = 1, message = "Total Price must be at least 1")
-    private Long totalPrice;
+    private Double totalPrice;
 }

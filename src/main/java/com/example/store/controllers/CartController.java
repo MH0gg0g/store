@@ -19,7 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.example.store.dtos.AddItemToCartRequest;
 import com.example.store.dtos.CartDto;
 import com.example.store.dtos.CartItemDto;
-import com.example.store.dtos.updateCartItemRequest;
+import com.example.store.dtos.UpdateCartItemRequest;
 import com.example.store.services.CartService;
 
 import jakarta.validation.Valid;
@@ -48,29 +48,29 @@ public class CartController {
 
     @GetMapping("/{cartId}")
     public CartDto getCart(@PathVariable UUID cartId) {
-        return cartService.getCart(cartId);
+        return cartService.getCartDto(cartId);
     }
 
     @PostMapping("/{cartId}/items")
     public ResponseEntity<CartItemDto> addToCart(@PathVariable UUID cartId,
             @Valid @RequestBody AddItemToCartRequest request) {
 
-        var cartItemDto = cartService.addToCart(cartId, request.getProductId());
+        var cartItemDto = cartService.addToCart(cartId, request.getProductId(), request.getQuantity());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItemDto);
     }
 
     @PutMapping("{cartId}/items/{productId}")
-    public CartItemDto updateItem(@PathVariable("cartId") UUID cartId,
-            @PathVariable("productId") Long productId,
-            @Valid @RequestBody updateCartItemRequest request) {
+    public CartItemDto updateItem(@PathVariable UUID cartId,
+            @PathVariable Long productId,
+            @Valid @RequestBody UpdateCartItemRequest request) {
 
         return cartService.updateItem(cartId, productId, request.getQuantity());
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<Void> removeItem(@PathVariable("cartId") UUID cartId,
-            @PathVariable("productId") Long productId) {
+    public ResponseEntity<Void> removeItem(@PathVariable UUID cartId,
+            @PathVariable Long productId) {
 
         cartService.removeItem(cartId, productId);
 
@@ -78,7 +78,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items")
-    public ResponseEntity<Void> clearCart(@PathVariable("cartId") UUID cartId) {
+    public ResponseEntity<Void> clearCart(@PathVariable UUID cartId) {
         cartService.clearCart(cartId);
         return ResponseEntity.noContent().build();
     }

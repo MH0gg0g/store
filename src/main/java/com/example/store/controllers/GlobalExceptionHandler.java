@@ -3,8 +3,6 @@ package com.example.store.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,12 +26,12 @@ import com.example.store.exceptions.UserNotFoundException;
 import com.example.store.services.AuthService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
-
-    private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final AuthService authService;
 
@@ -69,7 +67,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorDto> handleIllegalArgumentException(IllegalArgumentException ex) {
-        var errorDto = new ErrorDto(HttpStatus.BAD_REQUEST, ex.getMessage(), Map.of("Localized Message",ex.getLocalizedMessage()));
+        var errorDto = new ErrorDto(HttpStatus.BAD_REQUEST, ex.getMessage(),
+                Map.of("Localized Message", ex.getLocalizedMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
     }
 
@@ -89,7 +88,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleAccessDenied(AccessDeniedException ex) {
         User user = authService.getCurrentUser();
         String email = (user != null) ? user.getEmail() : "Anonymous";
-        logger.warn("Access denied for user: {}. Reason {} " + email, ex.getMessage());
+        log.warn("Access denied for user: {}. Reason {} " + email, ex.getMessage());
 
         var errorDto = new ErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDto);

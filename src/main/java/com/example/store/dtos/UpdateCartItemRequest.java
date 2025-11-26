@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class updateCartItemRequest {
+public class UpdateCartItemRequest {
 
     @NotNull(message = "Qunatity cannot be null")
     @Min(value = 1, message = "Quantity must be at least 1")

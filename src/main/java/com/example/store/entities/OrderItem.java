@@ -33,13 +33,13 @@ public class OrderItem {
     private Product product;
 
     @Column(name = "unit_price")
-    private Long unitPrice;
+    private Double unitPrice;
 
     @Column(name = "quantity")
     private Long quantity;
 
     @Column(name = "total_price")
-    private Long totalPrice;
+    private Double totalPrice;
 
     public OrderItem(Order order, Product product, Long quantity) {
         this.order = order;

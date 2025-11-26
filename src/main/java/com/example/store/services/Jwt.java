@@ -23,9 +23,9 @@ public class Jwt {
         return expired;
     }
 
-    public long getRemainingExpirationTime() {
-        long expirationMs = claims.getExpiration().getTime() - System.currentTimeMillis();
-        long remaining = Math.max(0, expirationMs);
+    public Long getRemainingExpirationTime() {
+        Long expirationMs = claims.getExpiration().getTime() - System.currentTimeMillis();
+        Long remaining = Math.max(0, expirationMs);
         return remaining;
     }
 

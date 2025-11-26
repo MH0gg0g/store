@@ -39,8 +39,8 @@ public class Order {
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "total_price")
-    private Long totalPrice;
+    @Column(name = "total_amount")
+    private Double totalAmount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private Set<OrderItem> items = new LinkedHashSet<>();
@@ -49,7 +49,7 @@ public class Order {
         var order = new Order();
         order.setCustomer(customer);
         order.setStatus(OrderStatus.PENDING);
-        order.setTotalPrice(cart.getTotalPrice());
+        order.setTotalAmount(cart.getTotalPrice());
 
         cart.getItems().forEach(item -> {
             var orderItem = new OrderItem(order, item.getProduct(), item.getQuantity());

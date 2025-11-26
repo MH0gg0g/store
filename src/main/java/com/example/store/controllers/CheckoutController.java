@@ -23,4 +23,8 @@ public class CheckoutController {
         return checkoutService.checkout(request.getCartId());
     }
 
+    @PostMapping("/cancel")
+    public void cancelOrder(@RequestBody Long orderId) {
+        checkoutService.cancelOrder(orderId);
+    }
 }

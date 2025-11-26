@@ -9,9 +9,9 @@ import com.example.store.dtos.CartItemDto;
 public interface CartService {
     CartDto createCart();
 
-    CartItemDto addToCart(UUID cartId, Long productId);
+    CartItemDto addToCart(UUID cartId, Long productId, Long quantity);
 
-    CartDto getCart(UUID cartId);
+    CartDto getCartDto(UUID cartId);
 
     CartItemDto updateItem(UUID cartId, Long productId, Long quantity);
 

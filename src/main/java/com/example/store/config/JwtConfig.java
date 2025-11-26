@@ -14,8 +14,8 @@ import lombok.Data;
 public class JwtConfig {
     private String secret;
     private String jwtBlacklistprefix;
-    private int refreshTokenExpiration;
-    private int accessTokenExpiration;
+    private Integer refreshTokenExpiration;
+    private Integer accessTokenExpiration;
 
     public SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());

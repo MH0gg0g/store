@@ -1,6 +1,6 @@
 create table
     users (
-        id BIGINT AUTO_INCREMENT NOT NULL,
+        id INT AUTO_INCREMENT NOT NULL,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
@@ -10,10 +10,10 @@ create table
 
 create table
     addresses (
-        id BIGINT AUTO_INCREMENT NOT NULL,
+        id INT AUTO_INCREMENT NOT NULL,
         street VARCHAR(255) NOT NULL,
         city VARCHAR(255) NOT NULL,
-        user_id BIGINT NOT NULL,
+        user_id INT NOT NULL,
         PRIMARY KEY (id)
     );
 
@@ -26,9 +26,10 @@ CREATE TABLE
 
 CREATE TABLE
     products (
-        id BIGINT AUTO_INCREMENT NOT NULL,
+        id INT AUTO_INCREMENT NOT NULL,
         name VARCHAR(255) NOT NULL,
-        price BIGINT NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        quantity INT NOT NULL,
         category_id TINYINT,
         description TEXT NOT NULL,
         PRIMARY KEY (id)
@@ -43,32 +44,32 @@ CREATE TABLE
 
 CREATE TABLE
     cart_items (
-        id BIGINT AUTO_INCREMENT NOT NULL,
+        id INT AUTO_INCREMENT NOT NULL,
         cart_id BINARY(16) NOT NULL,
-        product_id BIGINT NOT NULL,
-        quantity INT NOT NULL DEFAULT 1,
+        product_id INT NOT NULL,
+        quantity INT NOT NULL,
         PRIMARY KEY (id),
         CONSTRAINT `unique_cart_product` UNIQUE (cart_id, product_id)
     );
 
 CREATE TABLE
     orders (
-        id BIGINT AUTO_INCREMENT NOT NULL,
-        customer_id BIGINT NOT NULL,
+        id INT AUTO_INCREMENT NOT NULL,
+        customer_id INT NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
-        total_price BIGINT NOT NULL,
+        total_price DECIMAL(10, 2) NOT NULL,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
     );
 
 CREATE TABLE
     order_items (
-        id BIGINT AUTO_INCREMENT NOT NULL,
-        order_id BIGINT NOT NULL,
-        product_id BIGINT NOT NULL,
+        id INT AUTO_INCREMENT NOT NULL,
+        order_id INT NOT NULL,
+        product_id INT NOT NULL,
         quantity INT NOT NULL,
-        unit_price BIGINT NOT NULL,
-        total_price BIGINT NOT NULL,
+        unit_price DECIMAL(10, 2) NOT NULL,
+        total_price DECIMAL(10, 2) NOT NULL,
         PRIMARY KEY (id)
     );
 

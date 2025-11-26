@@ -6,6 +6,6 @@ import lombok.Data;
 public class OrderItemDto {
     private OrderProductDto product;
     private Long quantity;
-    private Long totalPrice;
+    private Double totalPrice;
 
 }

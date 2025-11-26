@@ -23,9 +23,9 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
-    @GetMapping("/{orderId}")
-    public OrderDto getOrder(@PathVariable("orderId") Long orderId) {
-        return orderService.getOrder(orderId);
+    @GetMapping("{userId}/{orderId}")
+    public OrderDto getOrder(@PathVariable Long userId, @PathVariable Long orderId) {
+        return orderService.getOrder(userId, orderId);
     }
 
 }

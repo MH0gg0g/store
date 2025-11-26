@@ -9,4 +9,6 @@ public class CheckoutResponse {
 
     private Long orderId;
 
+    private Double totalAmount;
+
 }

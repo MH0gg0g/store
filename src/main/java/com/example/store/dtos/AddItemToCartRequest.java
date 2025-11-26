@@ -7,6 +7,10 @@ import lombok.Data;
 @Data
 public class AddItemToCartRequest {
     @NotNull
-    @Min(value = 1, message = "Quantity must be at least 1")
+    @Min(value = 1, message = "Product ID must be a positive number")
     private Long productId;
+
+    @NotNull
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private Long quantity;
 }

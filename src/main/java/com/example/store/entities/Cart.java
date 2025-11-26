@@ -33,12 +33,27 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE, orphanRemoval = true)
     private Set<CartItem> items = new LinkedHashSet<>();
 
-    public Long getTotalPrice() {
-        long total = 0L;
+    public Double getTotalPrice() {
+        Double total = 0.0;
         for (CartItem item : items) {
             total += item.getTotalPrice();
         }
         return total;
+    }
+
+    public CartItem addItem(Product product, Long quantity) {
+        var cartItem = getItem(product.getId());
+
+        if (cartItem == null) {
+            cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setCart(this);
+            items.add(cartItem);
+        } else {
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        }
+        return cartItem;
     }
 
     public CartItem getItem(Long productId) {
@@ -47,27 +62,14 @@ public class Cart {
                 .orElse(null);
     }
 
-    public CartItem addItem(Product product) {
-        var cartItem = getItem(product.getId());
-
-        if (cartItem != null) {
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
-        } else {
-            cartItem = new CartItem();
-            cartItem.setProduct(product);
-            cartItem.setQuantity(1L);
-            cartItem.setCart(this);
-            items.add(cartItem);
-        }
-        return cartItem;
-    }
-
-    public void removeItem(long productId) {
+    public boolean removeItem(Long productId) {
         var cartItem = getItem(productId);
-        if (cartItem != null) {
-            items.remove(cartItem);
-            cartItem.setCart(null);
+        if (cartItem == null) {
+            return false;
         }
+        items.remove(cartItem);
+        cartItem.setCart(null);
+        return true;
     }
 
     public boolean isEmpty() {
